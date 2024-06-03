@@ -2,6 +2,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 function InterviewFeedBackPage() {
   const { userInterviewId } = useParams();
@@ -30,7 +38,6 @@ function InterviewFeedBackPage() {
     getInterview();
   }, []);
 
-  // while userInterview.feedback is blank refetch it every 5 seconds
   useEffect(() => {
     if (userInterview?.feedback) return;
     const interval = setInterval(() => {
@@ -41,26 +48,43 @@ function InterviewFeedBackPage() {
   }, []);
 
   return (
-    <>
-      <h1>Feedback</h1>
-      <h2>
-        {userInterview?.feedback
-          ? userInterview?.feedback
-          : "Generating feedback"}
-      </h2>
-      <h1>Interview Transcript</h1>
-      {userInterview?.transcript &&
-        userInterview.transcript.map((message: any, index: number) => (
-          <div key={index}>
-            <p>
-              <strong>
-                {message.role == "assistant" ? "Interviewer" : "You"}
-              </strong>
-              : {message.content}
-            </p>
-          </div>
-        ))}
-    </>
+    <div className="container mx-auto px-4 py-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Interview Feedback</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg">
+            {userInterview?.feedback
+              ? userInterview?.feedback
+              : "Generating feedback..."}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Separator className="my-8" />
+
+      <Accordion type="single" collapsible>
+        <AccordionItem value="transcript">
+          <AccordionTrigger>
+            <h2 className="text-xl font-semibold">Interview Transcript</h2>
+          </AccordionTrigger>
+          <AccordionContent>
+            {userInterview?.transcript &&
+              userInterview.transcript.map((message: any, index: number) => (
+                <div key={index} className="mb-4">
+                  <p>
+                    <strong>
+                      {message.role === "assistant" ? "Interviewer" : "You"}
+                    </strong>
+                    : {message.content}
+                  </p>
+                </div>
+              ))}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </div>
   );
 }
 

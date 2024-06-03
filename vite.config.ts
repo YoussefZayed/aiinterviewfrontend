@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 5173,
   },
   build: {
     ignoreDeprecations: true, // Ignore deprecation warnings
@@ -18,10 +18,11 @@ export default defineConfig({
       ignoreDevErrors: true, // Ignore TypeScript errors during development
     },
     rollupOptions: {
-      onwarn: (warning, rollupWarn) => {
-        if (warning.code !== "TYPESCRIPT_ERROR") {
-          rollupWarn(warning);
-        }
+      external: ["react"],
+      output: {
+        globals: {
+          react: "React",
+        },
       },
     },
   },

@@ -18,6 +18,12 @@ import { Button } from "@/components/ui/button";
 // @ts-ignore
 import { debounce } from "lodash";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -199,7 +205,7 @@ function AdminPage() {
       </Dialog>
 
       <h1 className="text-3xl font-bold mb-8">Interviews</h1>
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {interviews &&
           interviews.map((interview: any) => (
             <Card key={interview.id}>
@@ -221,7 +227,10 @@ function AdminPage() {
               <CardContent>
                 <p className="text-sm mb-4">
                   Interview Link:{" "}
-                  <a href={`${getUrl()}/${interview.id}`}>
+                  <a
+                    href={`${getUrl()}/${interview.id}`}
+                    className="text-blue-500 hover:underline"
+                  >
                     {`${getUrl()}/${interview.id}`}
                   </a>
                 </p>
@@ -271,7 +280,7 @@ function AdminPage() {
       <Separator className="my-8" />
 
       <h1 className="text-3xl font-bold mb-8">User Interviews</h1>
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {userInterviews &&
           userInterviews.map(
             (userInterview: {
@@ -303,26 +312,34 @@ function AdminPage() {
                   <p className="text-lg mb-4">
                     {userInterview?.feedback
                       ? userInterview?.feedback
-                      : "Generating feedback"}
+                      : "Generating feedback..."}
                   </p>
-                  <h2 className="text-xl font-bold mb-4">
-                    Interview Transcript
-                  </h2>
-                  {userInterview?.transcript &&
-                    userInterview.transcript.map(
-                      (message: any, index: number) => (
-                        <div key={index} className="mb-4">
-                          <p>
-                            <strong>
-                              {message.role == "assistant"
-                                ? "Interviewer"
-                                : userInterview.name}
-                            </strong>
-                            : {message.content}
-                          </p>
-                        </div>
-                      )
-                    )}
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="transcript">
+                      <AccordionTrigger>
+                        <h2 className="text-xl font-semibold">
+                          Interview Transcript
+                        </h2>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        {userInterview?.transcript &&
+                          userInterview.transcript.map(
+                            (message: any, index: number) => (
+                              <div key={index} className="mb-4">
+                                <p>
+                                  <strong>
+                                    {message.role === "assistant"
+                                      ? "Interviewer"
+                                      : userInterview.name}
+                                  </strong>
+                                  : {message.content}
+                                </p>
+                              </div>
+                            )
+                          )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </CardContent>
               </Card>
             )

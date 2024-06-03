@@ -22,9 +22,16 @@ import {
 } from "@/components/ui/tooltip";
 
 import useMic from "@/components/conversationalAi/ReactMic/useMic";
-import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
+import { FaMicrophone } from "react-icons/fa";
+import { Circles } from "react-loader-spinner";
 import EmojiTalker from "../talkingEmoji/emoji";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import axios from "axios";
 
 export type Props = {
@@ -179,119 +186,135 @@ export const ConversationalAi: FC<Props> = ({
 
   if (!started) {
     return (
-      <>
-        <button
-          onClick={() => {
-            setStarted(true);
-            socket?.emit("start-interview", {
-              userInterviewId: userInterviewId,
-            });
-          }}
-        >
-          Start Interview
-        </button>
-      </>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center">
+              Welcome to the Interview
+            </CardTitle>
+          </CardHeader>
+          <CardDescription className="p-4">
+            If the bottom right icon is spinning then just talk to respond to
+            the interviewer.
+          </CardDescription>
+          <CardContent>
+            <div className="space-y-6">
+              <Button
+                onClick={() => {
+                  setStarted(true);
+                  socket?.emit("start-interview", {
+                    userInterviewId: userInterviewId,
+                  });
+                }}
+                className="w-full"
+              >
+                Start Interview
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <>
-      <div className="w-full p-6 text-center flex flex-row justify-center items-center">
-        <div className="w-full h-full flex flex-col justify-between items-stretch">
+    <div className="container mx-auto p-6 h-screen flex flex-col">
+      <div className="grid grid-cols-2 gap-8 flex-grow overflow-y-auto">
+        <div className="flex flex-col items-center justify-between">
           <EmojiTalker
             className="h-[80vh]"
             phrase={"phrase"}
             speaking={speaking}
             onAnimationEnd={handleAnimationEnd}
           />
-          <div className="w-full p-6 text-center flex flex-row justify-center items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">Change Input device</Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>
-                  changes might take a few secs to take effect
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup
-                  value={
-                    mediaDevices.filter((device) => {
-                      return device.deviceId === currentDevice?.deviceId;
-                    })[0]?.label
-                  }
-                  onValueChange={(label: string) => {
-                    const newDevice = mediaDevices.filter((device) => {
-                      return device.label === label;
-                    })[0];
-                    if (newDevice?.deviceId)
-                      changeMediaDevice(newDevice?.deviceId);
-                  }}
-                >
-                  {mediaDevices.map((device) => {
-                    return (
-                      <DropdownMenuRadioItem
-                        key={device.deviceId}
-                        value={device.label}
-                      >
-                        {device.label}
-                      </DropdownMenuRadioItem>
-                    );
-                  })}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <button
-                    onClick={() => {
-                      setRecord(!record);
-                    }}
-                    type="button"
-                    className="w-[5vw] px-5"
-                  >
-                    {!record ? (
-                      <FaMicrophone size={42} />
-                    ) : (
-                      <FaMicrophoneSlash size={42} />
-                    )}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{record ? "Recording" : "Muted"}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <audio ref={audioRef} />
-          </div>
         </div>
 
-        <div className="w-full p-6 text-center flex flex-col justify-center items-center">
-          {messages.map((message, index) => {
-            return (
-              <Card key={index} className="m-2">
-                <CardHeader>
-                  <CardTitle>{message.by}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>{message.content}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
+        <div className="flex flex-col space-y-4 overflow-y-auto">
+          {messages.map((message, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <CardTitle>{message.by}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>{message.content}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
-      <button
-        onClick={() => {
-          socket?.emit("end-interview");
 
-          window.location.href = `/${interviewId}/${userInterviewId}/feedback`;
-        }}
-      >
-        End Interview
-      </button>
-    </>
+      <div className="mt-8 flex items-center justify-between space-x-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">Change Input Device</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>
+              Changes might take a few seconds to take effect
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuRadioGroup
+              value={
+                mediaDevices.filter((device) => {
+                  return device.deviceId === currentDevice?.deviceId;
+                })[0]?.label
+              }
+              onValueChange={(label: string) => {
+                const newDevice = mediaDevices.filter((device) => {
+                  return device.label === label;
+                })[0];
+                if (newDevice?.deviceId) changeMediaDevice(newDevice?.deviceId);
+              }}
+            >
+              {mediaDevices.map((device) => (
+                <DropdownMenuRadioItem
+                  key={device.deviceId}
+                  value={device.label}
+                >
+                  {device.label}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                onClick={() => setRecord(!record)}
+                variant={!record ? "destructive" : "default"}
+              >
+                {record ? (
+                  <Circles
+                    height="30"
+                    width="80"
+                    color="white"
+                    ariaLabel="loading"
+                  />
+                ) : (
+                  // <FaMicrophoneSlash className="h-6 w-6" />
+                  <FaMicrophone className="h-6 w-6" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{record ? "Recording" : "Muted"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <audio ref={audioRef} />
+
+        <Button
+          size="lg"
+          onClick={() => {
+            socket?.emit("end-interview");
+            window.location.href = `/${interviewId}/${userInterviewId}/feedback`;
+          }}
+        >
+          End Interview
+        </Button>
+      </div>
+    </div>
   );
 };
