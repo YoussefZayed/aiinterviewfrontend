@@ -37,6 +37,7 @@ import {
   systemPromptText,
   defaultTitleValue,
 } from "@/lib/defaults";
+import Markdown from "react-markdown";
 
 function AdminPage() {
   const [userInterviews, setUserInterviews] = useState<any>(null);
@@ -310,9 +311,11 @@ function AdminPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-lg mb-4">
-                    {userInterview?.feedback
-                      ? userInterview?.feedback
-                      : "Generating feedback..."}
+                    <Markdown>
+                      {userInterview?.feedback
+                        ? String(userInterview?.feedback)
+                        : "Generating feedback..."}
+                    </Markdown>
                   </p>
                   <Accordion type="single" collapsible>
                     <AccordionItem value="transcript">
