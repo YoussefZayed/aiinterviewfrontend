@@ -1,5 +1,4 @@
 import { ConversationalAi } from "@/components/conversationalAi";
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 function InterviewPage() {
@@ -8,8 +7,8 @@ function InterviewPage() {
   return (
     <>
       <ConversationalAi
-        interviewId={interviewId}
-        userInterviewId={userInterviewId}
+        interviewId={interviewId ?? ""}
+        userInterviewId={userInterviewId ?? ""}
       />
     </>
   );

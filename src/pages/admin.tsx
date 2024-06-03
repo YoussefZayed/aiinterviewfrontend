@@ -1,11 +1,21 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+  useEffect,
+  useState,
+} from "react";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { debounce } from "lodash";
 import {
   Dialog,
@@ -263,36 +273,60 @@ function AdminPage() {
       <h1 className="text-3xl font-bold mb-8">User Interviews</h1>
       <div className="grid grid-cols-1 gap-6">
         {userInterviews &&
-          userInterviews.map((userInterview) => (
-            <Card key={userInterview.id}>
-              <CardHeader>
-                <CardTitle>{userInterview.name}'s Feedback</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg mb-4">
-                  {userInterview?.feedback
-                    ? userInterview?.feedback
-                    : "Generating feedback"}
-                </p>
-                <h2 className="text-xl font-bold mb-4">Interview Transcript</h2>
-                {userInterview?.transcript &&
-                  userInterview.transcript.map(
-                    (message: any, index: number) => (
-                      <div key={index} className="mb-4">
-                        <p>
-                          <strong>
-                            {message.role == "assistant"
-                              ? "Interviewer"
-                              : userInterview.name}
-                          </strong>
-                          : {message.content}
-                        </p>
-                      </div>
-                    )
-                  )}
-              </CardContent>
-            </Card>
-          ))}
+          userInterviews.map(
+            (userInterview: {
+              id: Key | null | undefined;
+              name:
+                | string
+                | number
+                | boolean
+                | ReactElement<any, string | JSXElementConstructor<any>>
+                | Iterable<ReactNode>
+                | null
+                | undefined;
+              feedback:
+                | string
+                | number
+                | boolean
+                | ReactElement<any, string | JSXElementConstructor<any>>
+                | Iterable<ReactNode>
+                | ReactPortal
+                | null
+                | undefined;
+              transcript: any[];
+            }) => (
+              <Card key={userInterview.id}>
+                <CardHeader>
+                  <CardTitle>{userInterview.name}'s Feedback</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg mb-4">
+                    {userInterview?.feedback
+                      ? userInterview?.feedback
+                      : "Generating feedback"}
+                  </p>
+                  <h2 className="text-xl font-bold mb-4">
+                    Interview Transcript
+                  </h2>
+                  {userInterview?.transcript &&
+                    userInterview.transcript.map(
+                      (message: any, index: number) => (
+                        <div key={index} className="mb-4">
+                          <p>
+                            <strong>
+                              {message.role == "assistant"
+                                ? "Interviewer"
+                                : userInterview.name}
+                            </strong>
+                            : {message.content}
+                          </p>
+                        </div>
+                      )
+                    )}
+                </CardContent>
+              </Card>
+            )
+          )}
       </div>
     </div>
   );

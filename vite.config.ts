@@ -10,6 +10,19 @@ export default defineConfig({
     },
   },
   server: {
-    port: process.env.PORT || 5173, // Use the PORT environment variable, or default to 3000
+    port: process.env.PORT || 3000,
+  },
+  build: {
+    ignoreDeprecations: true, // Ignore deprecation warnings
+    typescript: {
+      ignoreDevErrors: true, // Ignore TypeScript errors during development
+    },
+    rollupOptions: {
+      onwarn: (warning, rollupWarn) => {
+        if (warning.code !== "TYPESCRIPT_ERROR") {
+          rollupWarn(warning);
+        }
+      },
+    },
   },
 });

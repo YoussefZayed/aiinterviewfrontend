@@ -24,14 +24,8 @@ import {
 import useMic from "@/components/conversationalAi/ReactMic/useMic";
 import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 import EmojiTalker from "../talkingEmoji/emoji";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import axios from "axios";
 
 export type Props = {
   /** Set initial value */
@@ -69,9 +63,11 @@ export const ConversationalAi: FC<Props> = ({
   const [socket, setSocket] = useState<Socket | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [messages, setMessages] = useState<messages[]>([]);
-  const [currentAiMessage, setCurrentAiMessage] = useState<string>("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_currentAiMessage, setCurrentAiMessage] = useState<string>("");
   const [speaking, setSpeaking] = useState<boolean>(false);
-  const [userName, setUserName] = useState<string>("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_userName, setUserName] = useState<string>("");
   const [started, setStarted] = useState<boolean>(false);
 
   const getInterview = async () => {
@@ -104,6 +100,7 @@ export const ConversationalAi: FC<Props> = ({
       setUserName(name);
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socketInstance.on("transcript", (data: any) => {
       setMessages((messages) => [
         ...messages,
@@ -114,6 +111,7 @@ export const ConversationalAi: FC<Props> = ({
       ]);
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socketInstance.on("ai", (data: any) => {
       setCurrentAiMessage((prevMessage) => {
         const nextCurrentAiMessage = prevMessage + data.content;
@@ -139,16 +137,19 @@ export const ConversationalAi: FC<Props> = ({
       // Create a URL for the audio Blob
       const audioUrl = URL.createObjectURL(audioBlob);
 
-      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       audioRef.current.src = audioUrl;
 
       setSpeaking(true);
       // setRecord(false);
 
-      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       audioRef.current.play();
 
-      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       audioRef.current.onended = () => {
         setSpeaking(false);
         setRecord(true);

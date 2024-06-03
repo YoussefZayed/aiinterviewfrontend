@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { toEmoji } from "@/components/talkingEmoji/helper";
 import "@/components/talkingEmoji/style.css";
 
 interface EmojiTalkerProps {

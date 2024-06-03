@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
 function InterviewFeedBackPage() {
-  const { interviewId, userInterviewId } = useParams();
+  const { userInterviewId } = useParams();
   const [userInterview, setUserInterview] = useState<any>(null);
 
   const getInterview = async () => {

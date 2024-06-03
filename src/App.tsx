@@ -1,5 +1,3 @@
-import { ConversationalAi } from "@/components/conversationalAi";
-
 import "./App.css";
 
 function App() {
