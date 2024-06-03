@@ -77,6 +77,7 @@ export const ConversationalAi: FC<Props> = ({
   const [speaking, setSpeaking] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_userName, setUserName] = useState<string>("");
+  const [runningTranscript, setRunningTranscript] = useState<string>("");
 
   const getInterview = async () => {
     try {
@@ -108,6 +109,10 @@ export const ConversationalAi: FC<Props> = ({
       setUserName(name);
     });
 
+    socketInstance.on("running-transcript", (data: string) => {
+      setRunningTranscript(data);
+    });
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socketInstance.on("transcript", (data: any) => {
       setMessages((messages) => [
@@ -117,6 +122,7 @@ export const ConversationalAi: FC<Props> = ({
           content: data,
         },
       ]);
+      setRunningTranscript("");
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -241,6 +247,16 @@ export const ConversationalAi: FC<Props> = ({
               </CardContent>
             </Card>
           ))}
+          {runningTranscript && (
+            <Card>
+              <CardHeader>
+                <CardTitle>You</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>{runningTranscript}</p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
 
