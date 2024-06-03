@@ -50,6 +50,7 @@ export const ConversationalAi: FC<Props> = ({
   interviewId,
   userInterviewId,
 }) => {
+  const [started, setStarted] = useState<boolean>(false);
   const {
     record,
     setRecord,
@@ -66,6 +67,7 @@ export const ConversationalAi: FC<Props> = ({
     onData: (data: Blob) => {
       sendVoice(data);
     },
+    started,
   });
   const [socket, setSocket] = useState<Socket | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -75,7 +77,6 @@ export const ConversationalAi: FC<Props> = ({
   const [speaking, setSpeaking] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_userName, setUserName] = useState<string>("");
-  const [started, setStarted] = useState<boolean>(false);
 
   const getInterview = async () => {
     try {
@@ -174,7 +175,7 @@ export const ConversationalAi: FC<Props> = ({
     if (socket) {
       setOnDataCallBack(sendVoice);
     }
-  }, [socket]);
+  }, [socket, started]);
 
   const sendVoice = (data: Blob) => {
     if (socket) socket.emit("packet-sent", data);

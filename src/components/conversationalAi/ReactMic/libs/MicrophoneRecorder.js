@@ -1,5 +1,3 @@
-import AudioContext from "./AudioContext";
-
 /* eslint-disable */
 
 let analyser;
@@ -88,13 +86,15 @@ export class MicrophoneRecorder {
           onDataCallback(event.data);
         }
       };
-
-      audioCtx = AudioContext.getAudioContext();
-      audioCtx.resume().then(() => {
-        analyser = AudioContext.getAnalyser();
-        mediaRecorder.start(10);
-        const sourceNode = audioCtx.createMediaStreamSource(stream);
-        sourceNode.connect(analyser);
+      import("./AudioContext").then((AudioContext) => {
+        console.log("AudioContext", AudioContext.default);
+        audioCtx = AudioContext.default.getAudioContext();
+        audioCtx.resume().then(() => {
+          analyser = AudioContext.default.getAnalyser();
+          mediaRecorder.start(10);
+          const sourceNode = audioCtx.createMediaStreamSource(stream);
+          sourceNode.connect(analyser);
+        });
       });
     });
   }

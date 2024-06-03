@@ -20,6 +20,7 @@ type propTypes = {
   onStop?: (blob: blobObject) => void;
   onData?: (blob: Blob) => void;
   onSave?: (blob: blobObject) => void;
+  started: boolean;
 };
 
 const useMic = ({
@@ -28,6 +29,7 @@ const useMic = ({
   onStop,
   onData,
   onSave,
+  started,
 }: propTypes) => {
   const [record, setRecord] = useState(false);
   const [microphoneRecorder, setMicrophoneRecorder] =
@@ -42,7 +44,7 @@ const useMic = ({
     };
     const soundOptions = {};
 
-    if (!microphoneRecorder) {
+    if (!microphoneRecorder && started) {
       const microphoneRecorderObj = new MicrophoneRecorder(
         null,
         onStop,
@@ -62,7 +64,7 @@ const useMic = ({
         setMediaDevices(currentDevices);
       })();
     }
-  }, []);
+  }, [started]);
 
   useEffect(() => {
     if (!microphoneRecorder) {
@@ -88,7 +90,9 @@ const useMic = ({
   }
 
   function setOnDataCallBack(onData: (blob: Blob) => void) {
-    microphoneRecorder.setOnDataCallBack(onData);
+    if (microphoneRecorder) {
+      microphoneRecorder.setOnDataCallBack(onData);
+    }
   }
 
   return {
