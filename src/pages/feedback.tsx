@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import Markdown from "react-markdown";
 
 function InterviewFeedBackPage() {
   const { userInterviewId } = useParams();
@@ -55,9 +56,11 @@ function InterviewFeedBackPage() {
         </CardHeader>
         <CardContent>
           <p className="text-lg">
-            {userInterview?.feedback
-              ? userInterview?.feedback
-              : "Generating feedback..."}
+            <Markdown>
+              {userInterview?.feedback
+                ? userInterview?.feedback
+                : "Generating feedback..."}
+            </Markdown>
           </p>
         </CardContent>
       </Card>
