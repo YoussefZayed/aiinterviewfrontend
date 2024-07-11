@@ -30,4 +30,8 @@ cp .env.template .env
 npm run dev
 ```
 
+https://github.com/user-attachments/assets/f655e964-b200-47be-b198-3ddc3a80d950
+
+
+
 [Backend Repo](https://github.com/YoussefZayed/aiInterviewbackend)
